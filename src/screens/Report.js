@@ -532,28 +532,7 @@ export default function Dashboard() {
                 }}>
                     Espèces remis : <strong> {amount2 && amount2.toLocaleString("FR-fr")} Fcfa </strong>
                 </div>
-                <div style={{
-                    display: "flex", 
-                    alignItems: "center", 
-                    justifyContent: "space-between", 
-                    marginTop: 10, 
-                    color: "rgb(41, 89, 152)", 
-                    paddingBottom: 5, 
-                    borderBottom: "1px solid black"
-                }} >
-                    <div style={{
-                        fontWeight: 300, 
-                        fontSize: 16
-                    }}>
-                        {goToOrders ? "Les commandes confirmées" : "Toutes les commandes"}
-                    </div>
-                    <div onClick={() => setGoToOrders(!goToOrders) } style={{
-                        cursor: "pointer"
-                    }}>
-                        {goToOrders ? <TbCircleCheckFilled size={30} /> : <TbCircleCheck size={30} />}
-                    </div>
-                    
-                </div>
+
                 <div style={{
                     width: "100%", 
                     marginTop: 10, 

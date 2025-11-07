@@ -77,6 +77,7 @@ export default function Historic() {
     const [list, setList] = useState([]); 
     const [loadList, setLoadList] = useState(false);
     const [final, setFinal] = useState([]);
+    const [readsOnly, setReadsOnly] = useState(false); 
     
 
 
@@ -114,7 +115,7 @@ export default function Historic() {
   useEffect(() => {
 
   
-    postFunction(GET_ORDER_URL, {type: type === "Return" ? "Tout" : type, goToOrders, retour: type === "Return" ? true: false, startAt: 0, userStatus: user.status   }, token).then((data) => {
+    postFunction(GET_ORDER_URL, {type: type === "Return" ? "Tout" : type, goToOrders, readsOnly, retour: type === "Return" ? true: false, startAt: 0, userStatus: user.status   }, token).then((data) => {
 
 
         console.log(data);
@@ -189,7 +190,7 @@ export default function Historic() {
             setMiddleStartAt(startAt);
             setLoading(true);
 
-            postFunction(GET_ORDER_URL, {type: type === "Return" ? "Tout" : type, goToOrders, retour: type === "Return" ? true: false, startAt, userStatus: user.status   }, token).then((data) => {
+            postFunction(GET_ORDER_URL, {type: type === "Return" ? "Tout" : type, goToOrders, readsOnly, retour: type === "Return" ? true: false, startAt, userStatus: user.status   }, token).then((data) => {
 
 
                 if(data && data.status === 0){
@@ -214,7 +215,7 @@ export default function Historic() {
                 
               
 
-                postFunction(GET_ORDER_URL, {type: type === "Return" ? "Tout" : type, goToOrders, retour: type === "Return" ? true: false, startAt: parseInt(middleStartAt) - 10, userStatus: user.status   }, token).then((data) => {
+                postFunction(GET_ORDER_URL, {type: type === "Return" ? "Tout" : type, goToOrders, readsOnly, retour: type === "Return" ? true: false, startAt: parseInt(middleStartAt) - 10, userStatus: user.status   }, token).then((data) => {
 
 
                     if(data && data.status === 0){
@@ -483,12 +484,34 @@ export default function Historic() {
                         fontWeight: 800, 
                         fontSize: 20
                     }}>
-                        {goToOrders ? "Les commandes non recouvrées" : "Toutes les commandes"}
+                        {goToOrders ? "Les commandes non recouvrées" : "Recouvrées et non recouvrées"}
                     </div>
-                    <div onClick={() => setGoToOrders(!goToOrders) } style={{
+                    <div onClick={() => {setGoToOrders(!goToOrders); setRefresh(!refresh); } } style={{
                         cursor: "pointer"
                     }}>
                         {goToOrders ? <TbCircleCheckFilled size={30} /> : <TbCircleCheck size={30} />}
+                    </div>
+                    
+                </div>
+                <div style={{
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "space-between", 
+                    marginTop: 10, 
+                    color: "rgb(41, 89, 152)", 
+                    paddingBottom: 5, 
+                    borderBottom: "1px solid black"
+                }} >
+                    <div style={{
+                        fontWeight: 300, 
+                        fontSize: 16
+                    }}>
+                        {readsOnly ? "Les commandes non confirmées" : "Toutes les commandes"}
+                    </div>
+                    <div onClick={() => {setReadsOnly(!readsOnly); setRefresh(!refresh)} } style={{
+                        cursor: "pointer"
+                    }}>
+                        {readsOnly ? <TbCircleCheckFilled size={30} /> : <TbCircleCheck size={30} />}
                     </div>
                     
                 </div>
