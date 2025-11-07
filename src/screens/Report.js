@@ -23,7 +23,8 @@ import Select from 'react-select'
 import Item from '../components/Item';
 import { HiOutlineArrowLeftStartOnRectangle } from "react-icons/hi2";
 import { HiOutlineArrowRightOnRectangle } from "react-icons/hi2";
-
+import { TbCircleCheckFilled } from "react-icons/tb";
+import { TbCircleCheck } from "react-icons/tb";
 
 
 
@@ -51,6 +52,8 @@ export default function Dashboard() {
     const [startAt, setStartAt] = useState(0);
     const [amount, setAmount] = useState(0);
     const [amount2, setAmount2] = useState(0);
+    const [amount3, setAmount3] = useState(0);
+    const [amount4, setAmount4] = useState(0);
     const [service, setService] = useState("Airtel Money"); 
     const [recId, setRecId] = useState(user._id);
     const [loading, setLoading] = useState(false);
@@ -70,6 +73,7 @@ export default function Dashboard() {
     const currentYear2 = new Date().getFullYear();
     const [datee, setDatee] = useState(new Date());
     const [datee2, setDatee2] = useState(new Date());
+    const [goToOrders, setGoToOrders] = useState(false);
  
 
     const handleDayChange = (e) => {
@@ -222,9 +226,10 @@ export default function Dashboard() {
 
     useEffect(() => {
 
+       // alert(goToOrders);
 
         postFunction(GET_REPORT_URL, {date1: datee, date2: datee2,
-            _id: recId, name: service, startAt: 0}, token).then((data) => {
+            _id: recId, name: service, read: goToOrders, startAt: 0}, token).then((data) => {
 
                console.log(data);
 
@@ -239,13 +244,15 @@ export default function Dashboard() {
                    //console.log(data.orders); 
                    setAmount(data.amount); 
                    setAmount2(data.cash);
+                   setAmount3(data.amount1); 
+                   setAmount4(data.amount2);
                    setStartAt(data.startAt);
                   // console.log(data.startAt)
            }
 
        })
 
-    }, [recId, service])
+    }, [recId, service, goToOrders])
 
     function formatDateToISO(date) {
         // Utilise la méthode toISOString pour obtenir la date en UTC
@@ -279,7 +286,7 @@ export default function Dashboard() {
             setMiddleStartAt(startAt);
 
             postFunction(GET_REPORT_URL, {date1: datee, date2: datee2 ,
-                _id: recId, name: service, startAt}, token).then((data) => {
+                _id: recId, name: service, startAt, read: goToOrders}, token).then((data) => {
     
                   // console.log(data);
     
@@ -294,6 +301,8 @@ export default function Dashboard() {
                        //console.log(data.orders); 
                        setAmount(data.amount); 
                        setAmount2(data.cash);
+                       setAmount3(data.amount1); 
+                       setAmount4(data.amount2);
                        setStartAt(data.startAt);
                 
                        setLoading(false);
@@ -310,7 +319,7 @@ export default function Dashboard() {
                 setMiddleStartAt(parseInt(middleStartAt) - 10);
 
                 postFunction(GET_REPORT_URL, {date1: datee, date2: datee2,
-                    _id: recId, name: service, startAt : parseInt(middleStartAt) - 10}, token).then((data) => {
+                    _id: recId, name: service, read: goToOrders, startAt : parseInt(middleStartAt) - 10}, token).then((data) => {
         
                       // console.log(data);
         
@@ -325,6 +334,8 @@ export default function Dashboard() {
                            //console.log(data.orders); 
                            setAmount(data.amount); 
                            setAmount2(data.cash);
+                           setAmount3(data.amount1); 
+                           setAmount4(data.amount2);
                            setStartAt(data.startAt);
                            setLoading(false);
                           // console.log(data.startAt)
@@ -372,7 +383,7 @@ export default function Dashboard() {
 
 
         postFunction(GET_REPORT_URL, {date1: (new Date(Date.UTC(year, month -1, day))), date2: (new Date(Date.UTC(year2, month2 - 1, day2))),
-            _id: recId, name: service, startAt: 0}, token).then((data) => {
+            _id: recId, name: service, startAt: 0, read: goToOrders}, token).then((data) => {
 
                console.log(data);
 
@@ -387,6 +398,8 @@ export default function Dashboard() {
                    //console.log(data.orders); 
                    setAmount(data.amount); 
                    setAmount2(data.cash);
+                   setAmount3(data.amount1); 
+                   setAmount4(data.amount2);
                    setStartAt(data.startAt);
                   // console.log(data.startAt)
            }
@@ -499,7 +512,47 @@ export default function Dashboard() {
                     paddingBottom: 10, 
                     borderBottom: "1px solid #bbb"
                 }}>
+                    Recouvrement Cash : <strong> {amount3 && amount3.toLocaleString("FR-fr")} Fcfa </strong>
+                </div>
+
+                <div style={{
+                    marginTop: 10, 
+                    marginLeft: 3, 
+                    paddingBottom: 10, 
+                    borderBottom: "1px solid #bbb"
+                }}>
+                    Retours E-cash : <strong> {amount4 && amount4.toLocaleString("FR-fr")} Fcfa </strong>
+                </div>
+
+                <div style={{
+                    marginTop: 10, 
+                    marginLeft: 3, 
+                    paddingBottom: 10, 
+                    borderBottom: "1px solid #bbb"
+                }}>
                     Espèces remis : <strong> {amount2 && amount2.toLocaleString("FR-fr")} Fcfa </strong>
+                </div>
+                <div style={{
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "space-between", 
+                    marginTop: 10, 
+                    color: "rgb(41, 89, 152)", 
+                    paddingBottom: 5, 
+                    borderBottom: "1px solid black"
+                }} >
+                    <div style={{
+                        fontWeight: 300, 
+                        fontSize: 16
+                    }}>
+                        {goToOrders ? "Les commandes confirmées" : "Toutes les commandes"}
+                    </div>
+                    <div onClick={() => setGoToOrders(!goToOrders) } style={{
+                        cursor: "pointer"
+                    }}>
+                        {goToOrders ? <TbCircleCheckFilled size={30} /> : <TbCircleCheck size={30} />}
+                    </div>
+                    
                 </div>
                 <div style={{
                     width: "100%", 
